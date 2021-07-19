@@ -1,0 +1,17 @@
+{
+  "name": "week2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "parse.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "images": "^3.2.3"
+  },
+  "dependencies": {
+    "css": "^3.0.0"
+  }
+}
