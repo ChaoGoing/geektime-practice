@@ -6,6 +6,12 @@ let currentToken = null
 let curentAttribute = null
 let currentTextNode = null
 
+function toCamelCase(str) {
+  return str.replace(/(-[a-z])/g, (c) => {
+    return c.slice(1).toUpperCase()
+  })
+}
+
 function match(element, selector) {
   if(!selector || !element.attributes) return false
   
@@ -17,7 +23,7 @@ function match(element, selector) {
     // 类名选择器
     const attr = element.attributes.find(attr => attr.name === 'class')
     const classes = attr && attr.value.split(" ")
-     return classes && (classes.find(c => c === selector.replace('.', '')))
+    return classes && (classes.find(c => c === selector.replace('.', '')))
   }else {
     // tag
     return element.tagName === selector
@@ -38,13 +44,14 @@ function computedCSS(element) {
 
   for(let rule of rules) {
     const selectorParts = rule.selectors[0].split(" ").reverse();
-    if(!match(element, selectorParts[0])) {
+    const __match = match(element, selectorParts[0])
+    if(!__match) {
       continue
     }
     let j = 1
     let matched = false
-    for(let i = 0; i < element.length; i++) {
-      if(match(element[i], selectorParts[i])) {
+    for(let i = 0; i < elements.length; i++) {
+      if(match(elements[i], selectorParts[j])) {
         j++
       }
     }
@@ -55,7 +62,7 @@ function computedCSS(element) {
       const computedStyle = element.computedStyle
       const sp = specificity(rule.selectors[0])
       for(let declaration of rule.declarations) {
-        const property = declaration.property
+        const property = toCamelCase(declaration.property)
         if(!computedStyle[property]) {
           computedStyle[property] = {}
         }
@@ -131,11 +138,13 @@ function emit(token) {
       }
       stack.pop()
     }
-    layout(top)
     const attr = top.attributes.find(item => item.name === 'id')
-    if(top.tagName === 'div' && attr &&  attr.value.includes('container')) {
-      console.log(top)
-    }
+    // if(top.tagName === 'div' && attr &&  attr.value.includes('container')) {
+    //   console.log(top)
+    // }
+    layout(top)
+    
+    
     currentTextNode = null
   }else if(token.type === 'text') {
     if(currentTextNode === null) {

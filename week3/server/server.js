@@ -33,25 +33,64 @@ http.createServer((request, response) => {
 }
 #container-row .box1{
   width: 100px;
+  background-color: rgb(0,255,255);
 }
 #container-row .box2{
   flex: 1;
+  background-color: rgb(255,0,255);
+}
+
+#container-rowreverse{
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  width: 500px;
+  background-color: rgb(255,255,0);
+}
+#container-rowreverse .box1{
+  width: 100px;
+  background-color: rgb(255, 255, 255);
+}
+#container-rowreverse .box2{
+  width: 200px;
+  background-color: rgb(0,255,255);
+}
+#container-rowreverse .box3{
+  width: 400px;
+  background-color: rgb(0,0,255);
+}
+
+#container-column{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 200px;
+  background-color: rgb(255,255,255);
+}
+#container-column .box1{
+  height: 100px;
+  background-color: rgb(0,0,255);
+}
+#container-column .box2{
+  height: 200px;
+  background-color: rgb(255,0,255);
 }
 
 </style>
 <body>
   <div class='first color'>123</div>
   <div id="container-row">
-    <div id="box1"></div>
-    <div id="box2"></div>
+    <div class="box1"></div>
+    <div class="box2"></div>
   </div> 
   <div id="container-rowreverse">
-    <div id="box1"></div>
-    <div id="box2"></div>
+    <div class="box1"></div>
+    <div class="box2"></div>
+    <div class="box3"></div>
   </div>
   <div id="container-column">
-    <div id="box1"></div>
-    <div id="box2"></div>
+    <div class="box1"></div>
+    <div class="box2"></div>
   </div>
 </body>
 </html>`)

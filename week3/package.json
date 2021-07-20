@@ -9,7 +9,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "images": "^3.2.3"
+    "images": "^3.2.3",
+    "@babel/cli": "^7.14.5",
+    "@babel/core": "^7.14.6",
+    "@babel/preset-env": "^7.14.7",
+    "babel-preset-env": "^1.7.0"
   },
   "dependencies": {
     "css": "^3.0.0"

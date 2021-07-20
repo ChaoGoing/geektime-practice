@@ -1,7 +1,7 @@
 const images = require("images");
 const net = require("net");
 const parser = require("./core/parse")
-const {render} = require('./core/render.js')
+const {renderCanvas, render} = require('./core/render.js')
 
 class Request{
   constructor(options) {
@@ -206,6 +206,8 @@ class TrunkedBodyParser {
   const dom = parser.parseHTML(response.body)
   const viewport = images(600, 800)
   // console.log(dom.children[0].children[5].children[3])
-  render(viewport, dom.children[0].children[5].children[3])
+  render(viewport, dom.children[0])
+  viewport.save("viewport.jpg")
+  // renderCanvas(dom)
 })()
 
