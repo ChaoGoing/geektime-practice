@@ -2,6 +2,10 @@ const images = require("images");
 const net = require("net");
 const parser = require("./core/parse")
 const {renderCanvas, render} = require('./core/render.js')
+// import images from 'images'
+// import net from 'net'
+// import parser from './core/parse'
+// import { renderCanvas, render } from './core/render.js'
 
 class Request{
   constructor(options) {
