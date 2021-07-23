@@ -58,7 +58,7 @@ function layout(element) {
 
   // 初始化主轴，交叉轴参数
   let mainSize, mainStart, maninEnd, mainSign, mainBase,
-    corssSize, corssStart, croseeEnd, crossSign, crossBase
+    crossSize, crossStart, croseeEnd, crossSign, crossBase
 
   if(s.flexDirection === 'row') {
     mainSize = 'width'
@@ -67,8 +67,8 @@ function layout(element) {
     mainSign = +1
     mainBase = 0
 
-    corssSize = 'height'
-    corssStart = 'top'
+    crossSize = 'height'
+    crossStart = 'top'
     crossEnd = 'bottom'
   } 
   if(s.flexDirection === 'row-reverse') {
@@ -78,8 +78,8 @@ function layout(element) {
     mainSign = -1
     mainBase = s.width
 
-    corssSize = 'height'
-    corssStart = 'top'
+    crossSize = 'height'
+    crossStart = 'top'
     crossEnd = 'bottom'
   }
   if(s.flexDirection === 'column') {
@@ -89,8 +89,8 @@ function layout(element) {
     mainSign = +1
     mainBase = 0
 
-    corssSize = 'width'
-    corssStart = 'left'
+    crossSize = 'width'
+    crossStart = 'left'
     crossEnd = 'right'
   }
   if(s.flexDirection === 'column-reverse') {
@@ -100,9 +100,19 @@ function layout(element) {
     mainSign = -1
     mainBase = s.height
 
-    corssSize = 'width'
-    corssStart = 'left'
+    crossSize = 'width'
+    crossStart = 'left'
     crossEnd = 'right'
+  }
+
+  if(s.flexWrap === 'wrap-reverse') {
+    let temp = crossStart
+    crossStart = crossEnd
+    crossEnd = temp
+    crossSign = -1
+  }else {
+    crossBase = 0
+    crossSign = 1
   }
 
   // 包裹容器元素未定义宽度
@@ -137,8 +147,8 @@ function layout(element) {
       flexLine.push(item)
     }else if(s.flexWrap = 'nowrap' && isAutoMainSize) {
       mainSpace -= itemStyle[mainSize]
-      if(itemStyle[corssSize]) {
-        crossSpace = Math.max(crossSpace, itemStyle[corssSize])
+      if(itemStyle[crossSize]) {
+        crossSpace = Math.max(crossSpace, itemStyle[crossSize])
       }
       flexLine.push(item)
     }else {
@@ -155,8 +165,8 @@ function layout(element) {
       }else {
         flexLine.push(item)
       }
-      if(itemStyle[corssSize]) {
-        crossSpace = Math.max(crossSpace, itemStyle[corssSize])
+      if(itemStyle[crossSize]) {
+        crossSpace = Math.max(crossSpace, itemStyle[crossSize])
       }
       mainSpace -= itemStyle[mainSize]
     }
@@ -165,7 +175,7 @@ function layout(element) {
   // 处理最后一行的crossSpace和mainSpace
   flexLine.mainSpace = mainSpace
   if(s.flexWrap === 'nowrap' || isAutoMainSize) {
-    flexLine.crossSpace = s[corssSize] ? s[corssSize] : crossSpace
+    flexLine.crossSpace = s[crossSize] ? s[crossSize] : crossSpace
   }else {
     flexLine.crossSpace = crossSpace
   }
@@ -244,8 +254,80 @@ function layout(element) {
       }
 
     })
-
   }
+
+  // let crossSpace
+    if(!s[crossSize]) {
+      crossSpace = 0
+      elementStyle[crossSize] = 0;
+      for(let i = 0; i < flexLines.length; i++) {
+        elementStyle[crossSize] += flexLines[i].crossSpace
+      }
+    }else {
+      crossSpace = s[crossSize]
+      for(let i = 0; i < flexLines.length; i++) {
+        // 这里是每一行的记录的crossSpace
+        crossSpace -= flexLines[i].crossSpace
+      }
+    }
+    if(s.flexWrap === 'wrap-reverse') {
+      crossBase = s[crossSize]
+    }else {
+      crossBase = 0
+    }
+
+  // align-content: 多行的flex容器下，每一行在交叉轴的布局  
+  // align-items flex子项在每个flex行的交叉轴的对齐方式
+  const lineSize = s[crossSize] / flexLines.length
+  let step
+
+  if(s.alignContent === 'flex-start') {
+    crossBase += 0
+    step = 0
+  }
+  if(s.alignContent === 'flex-end') {
+    crossBase += crossSign * crossSpace/2
+    step = 0
+  }
+  if(s.alignContent === 'stretch') {
+    crossBase += 0
+    step = 0
+  }
+
+
+
+  flexLines.forEach(items => {
+    const lineCrossSize = s.alignContent === 'stretch' ? items.crossSpace + crossSpace/flexLines.length : items.crossSpace
+    for(let i = 0; i < items.length; i++) {
+      const item = items[i]
+      const itemStyle = getStyle(item)
+      const align = itemStyle.alignSelf || s.alignItems
+      if(align === null) {
+        itemStyle[crossSize] = (align === 'stretch') ? lineCrossSize :0
+      }
+      if(align === 'flex-start') {
+        itemStyle[crossStart] = crossBase
+        itemStyle[croseeEnd] = itemStyle[crossStart] + crossSign*itemStyle[crossSize]
+      }
+      if(align === 'flex-end') {
+        itemStyle[croseeEnd] = crossBase + crossSign*lineCrossSize
+        itemStyle[crossStart] = itemStyle[crossEnd] - crossSign*itemStyle[crossSize]
+      }
+      if(align === 'center') {
+        itemStyle[crossStart] = crossBase + crossSign*(lineCrossSize - itemStyle[crossSize])/2
+        itemStyle[croseeEnd] = itemStyle[crossStart] + crossSign * itemStyle[crossSize]
+      }
+      if(align === 'stretch') {
+        itemStyle[crossStart] = crossBase
+        itemStyle[crossEnd] = crossBase + crossSign * (itemStyle[crossSize] || lineCrossSize )
+        itemStyle[crossSize] = crossSign * (itemStyle[crossEnd] - itemStyle[crossStart]) 
+      }
+    }
+
+    crossBase += crossSign*(lineCrossSize + step)
+  })
+
+  console.log(items)
 
 }
 

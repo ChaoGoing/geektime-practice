@@ -29,14 +29,17 @@ http.createServer((request, response) => {
   display: flex;
   justify-content: space-between;
   width: 500px;
+  height: 200px;
   background-color: rgb(255,255,255);
 }
 #container-row .box1{
   width: 100px;
+  height: 200px;
   background-color: rgb(0,255,255);
 }
 #container-row .box2{
   flex: 1;
+  height: 100px;
   background-color: rgb(255,0,255);
 }
 
@@ -45,26 +48,28 @@ http.createServer((request, response) => {
   flex-direction: row-reverse;
   justify-content: flex-start;
   width: 500px;
-  background-color: rgb(255,255,0);
+  height: 300px;
+  background-color: rgb(255,255,255);
 }
 #container-rowreverse .box1{
   width: 100px;
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(255,255,0);
 }
 #container-rowreverse .box2{
   width: 200px;
   background-color: rgb(0,255,255);
 }
 #container-rowreverse .box3{
-  width: 400px;
+  width: 100px;
   background-color: rgb(0,0,255);
 }
 
 #container-column{
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  width: 200px;
+  justify-content: center;
+  width: 400px;
+  height: 350px;
   background-color: rgb(255,255,255);
 }
 #container-column .box1{
