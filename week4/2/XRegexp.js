@@ -11,14 +11,13 @@ class XRegexp{
     if(source[name] instanceof RegExp) {
       return {
         source: source[name].source,
-        length: 0
+        length: 1
       }
     }
     // length的作用: 将map的索引和正则exec捕获的分组索引对应
-    let length = 0
+    let length = 1
     let regexp = source[name].replace(/\<([^\>]+)\>/g, (str, $1) => {
       this.map.set(start + length, $1)
-      length++
       
       let r = this.complie(source, $1, start + length)
       length += r.length
