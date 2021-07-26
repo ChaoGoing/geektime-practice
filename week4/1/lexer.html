@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<pre>
+<script>
+
+  let xregexp = {
+    InputElement: '<WhiteSpace>|<Comments>|<LineTerminator>|<Token>',
+    WhiteSpace: / /,
+    LineTerminator: /\n/,
+    Comments: /\*[^\/]\/\*([^*]|\*[^\/])*\*\/|\/\/*[^\n]*/,
+    Token: '<Literal>|<Keywords>|<Identifier>|<Punctuator>',
+    Literal: '<NumricLiteral>|<BooleanLiteral>|<StringLiteral>|<NullLiteral>',
+    NumricLiteral: /([1-9][0-9]*|0)\.[0-9]*|.[0-9]+/,
+    BooleanLiteral: /true|false/,
+    StringLiteral: /\"([^"\n]|\\[\s\S])*\"|\`([^"\n]|\\[\s\S])*\`/,
+    NullLiteral: /null/,
+    Identifier: /[a-zA-z_$][a-zA-Z0-9a_$]*/,
+    Keywords: /if|else|for|function|any|try|catch/,
+    Punctuator: /\+|\,|\?|\(|=|\+\+|==|=>|<|\.|\)|\[|\]|;|\*|\}|\{/,
+  }
+
+  function compileRegExp(_xregexp, name) {
+    // RegExpObject.source 返回模式匹配所用的文本
+    if(_xregexp[name] instanceof RegExp) {
+      return _xregexp[name].source
+    }
+    let regexp = _xregexp[name].replace(/\<([^>]+)\>/g, function(str, $1) {
+      return compileRegExp(_xregexp, $1)
+    })
+    return regexp
+  }
+  
+  function scan(str) {
+    const regexp = new RegExp(compileRegExp(xregexp, 'InputElement'), 'g')
+    console.log("regexp", regexp, str)
+    // 正则的修饰符g 不能漏
+    // let regexp = / |\n|\*[^\/]\/\*([^*]|\*[^\/])*\*\/|\/\/*[^\n]*|[1-9][0-9*]|0/g
+    while(regexp.lastIndex < str.length) {
+      let r =  regexp.exec(str)
+      console.log(r[0])
+      document.write(r[0])
+      if(!r[0].length) {
+        break
+      }
+    }
+  }
+
+  scan(`
+    for(let i = 0; i<3; i++) {
+
+    }
+    function getStyle(ele) {
+      if(!ele.style) {
+        ele.style = {}
+      }
+      for(let prop in ele.computedStyle) {
+        const p = ele.computedStyle[prop].value
+        ele.style[prop] = p
+        if(p) {
+          ele.style[prop] = parseInt(p)
+        }
+      }
+      return ele.style
+    }`)
+</script>
+</pre>
+</html>
